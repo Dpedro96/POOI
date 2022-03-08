@@ -1,0 +1,344 @@
+#include<iostream>
+#include<iomanip>
+#include<ctime>
+#define N 9
+using namespace std;
+
+typedef struct{
+    string jogador;
+    char submarino[2];
+    char hidroaviao[6];
+    int contA=10;
+    int contB=10;
+    string campoC[N][N];
+} Variaveis;
+
+void inicializa(Variaveis *variaveis,string campoA[N][N],string campoB[N][N]){   
+    char linha[10]={'1','2','3','4','5','6','7','8','9','0'};
+    char coluna[10]={'A','B','C','D','E','F','G','H','I','J'};
+
+     for(int i=0;i<N;i++){
+        for(int j=0;j<N;j++){
+            if(j==0){
+                if(i==0){
+                    campoA[i][j] ="";
+                    campoB[i][j] ="";
+                    variaveis->campoC[i][j] ="";
+                }
+                else{
+                    campoA[i][j]=coluna[i-1]; 
+                    campoB[i][j]=coluna[i-1];
+                    variaveis->campoC[i][j]=coluna[i-1];
+                }
+            }
+            else{
+                if(i==0){
+                    if(j==10){
+                        campoA[i][j]="10";
+                        campoB[i][j]="10";
+                        variaveis->campoC[i][j]="10";
+                    }
+                    else{
+                        campoA[i][j]=linha[j-1];
+                        campoB[i][j]=linha[j-1];
+                        variaveis->campoC[i][j]=linha[j-1];
+                    }
+                }
+                else{
+                    campoA[i][j]="~~";
+                    campoB[i][j]="~~";
+                    variaveis->campoC[i][j]="~~";
+                }
+            }   
+        }
+    }
+    cout << "Digite seu nome" << endl;
+    cin >> variaveis->jogador;
+}
+void limpacampo(string campoX[N][N]){
+    for(int i=0;i<N;i++){
+        for(int j=0;j<N;j++){
+            if(campoX[i][j]=="0"){
+                campoX[i][j]="~~";
+            }
+        }
+    }
+}
+void imprime(string campoX[N][N]){ 
+    for(int i=0;i<N;i++){
+        for(int j=0;j<N;j++){
+            cout << setw(5) << campoX[i][j];
+        }
+        cout << endl << endl;
+    }
+}
+void imprimeAeB(Variaveis *variaveis, string campoX[N][N]){ 
+    for(int i=0;i<N;i++){
+        for(int j=0;j<N;j++){
+            cout << setw(5) << campoX[i][j];
+        }
+        cout << "     ";
+        for(int j=0;j<N;j++){
+            cout << setw(5) << variaveis->campoC[i][j];
+        }
+        cout << endl << endl;
+    }
+}
+void preenchesub(Variaveis *variaveis){
+    cout << "Digite a cordenada de seu submarino(A a H e 1 ao 8)" << endl;
+    cin >> variaveis->submarino[0] >> variaveis->submarino[1];
+    if(variaveis->submarino[0] >= 65 && variaveis->submarino[0] <=72){
+        variaveis->submarino[0]-=64;
+        variaveis->submarino[1]-=48;
+    }
+    else{
+        if(variaveis->submarino[0] >= 97 && variaveis->submarino[0] <= 122){
+            variaveis->submarino[0]-=96;
+            variaveis->submarino[1]-=48; 
+        }
+        else{
+            cout << "Posicao invalida" << endl;
+        }
+    }  
+}
+
+int verificasub(Variaveis *variaveis,string campoX[N][N]){      
+        if(campoX[variaveis->submarino[0]][variaveis->submarino[1]]!="0"){
+            campoX[variaveis->submarino[0]][variaveis->submarino[1]]="S"; 
+            for(int i=variaveis->submarino[0]-1;i<=variaveis->submarino[0]+1;i++){
+                for(int j=variaveis->submarino[1]-1;j<=variaveis->submarino[1]+1;j++){
+                    if(campoX[i][j]=="~~"){
+                    campoX[i][j]="0";    
+                    }
+                }
+            }
+        }
+        else{
+            return -1;
+        }
+        return 1;
+    }
+void preenchehidro(Variaveis *variaveis){
+    cout << "Digite a cordenada central do hidroaviao" << endl;
+    cin >> variaveis->hidroaviao[0] >> variaveis->hidroaviao[1];
+    cout << "Para posicionar para cima digite 1 ou para baixo 2 ou para esquerda 3 ou para direita 4" << endl;
+    cin >> variaveis->hidroaviao[2];
+    if(variaveis->hidroaviao[0] >= 65 && variaveis->hidroaviao[0] <= 90){
+        variaveis->hidroaviao[0]-=64;
+        variaveis->hidroaviao[1]-=48;
+        variaveis->hidroaviao[2]-=48;
+    }
+    else{
+        if(variaveis->hidroaviao[0] >= 97 && variaveis->hidroaviao[0] <= 122){
+        variaveis->hidroaviao[0]-=96;
+        variaveis->hidroaviao[1]-=48;
+        variaveis->hidroaviao[2]-=48;
+        }
+        else{
+            cout << "Posicao invalida" << endl;
+        }
+    }
+}
+int verificahidro(Variaveis *variaveis, string campoX[N][N]){
+    int s=0;
+        switch(variaveis->hidroaviao[2]){
+            case 1:
+                if((variaveis->hidroaviao[1]+1)<=8 && (variaveis->hidroaviao[1]-1)<=8 && (variaveis->hidroaviao[0]+1)<=8 && (variaveis->hidroaviao[1]+1)>0 && (variaveis->hidroaviao[1]-1)>0 && (variaveis->hidroaviao[0]+1)>0){
+                        if(campoX[variaveis->hidroaviao[0]][variaveis->hidroaviao[1]]!="0" && campoX[variaveis->hidroaviao[0]][variaveis->hidroaviao[1]+1]!="0" && campoX[variaveis->hidroaviao[0]][variaveis->hidroaviao[1]-1]!="0" && campoX[variaveis->hidroaviao[0]+1][variaveis->hidroaviao[1]]!="0"){
+                         s=1;
+                        }   
+                    }
+            break;
+            case 2:
+                if((variaveis->hidroaviao[1]+1)<=8 && (variaveis->hidroaviao[1]-1)<=8 && (variaveis->hidroaviao[0]-1)<=8 && (variaveis->hidroaviao[1]+1)>0 && (variaveis->hidroaviao[1]-1)>0 && (variaveis->hidroaviao[0]-1)>0){
+                        if(campoX[variaveis->hidroaviao[0]][variaveis->hidroaviao[1]]!="0" && campoX[variaveis->hidroaviao[0]][variaveis->hidroaviao[1]+1]!="0" && campoX[variaveis->hidroaviao[0]][variaveis->hidroaviao[1]-1]!="0" && campoX[variaveis->hidroaviao[0]-1][variaveis->hidroaviao[1]]!="0"){
+                           s=1;  
+                        }         
+                    }
+            break;
+            case 3:
+                if((variaveis->hidroaviao[0]+1)<=8 && (variaveis->hidroaviao[0]-1)<=8 && (variaveis->hidroaviao[1]+1)<=8 && (variaveis->hidroaviao[0]+1)>0 && (variaveis->hidroaviao[0]-1)>0 && (variaveis->hidroaviao[1]+1)>0){
+                        if(campoX[variaveis->hidroaviao[0]][variaveis->hidroaviao[1]]!="0" && campoX[variaveis->hidroaviao[0]+1][variaveis->hidroaviao[1]]!="0" && campoX[variaveis->hidroaviao[0]-1][variaveis->hidroaviao[1]]!="0" && campoX[variaveis->hidroaviao[0]][variaveis->hidroaviao[1]+1]!="0"){
+                            s=1;
+                        } 
+                    }
+            break;
+            case 4:
+                if((variaveis->hidroaviao[0]+1)<=8 && (variaveis->hidroaviao[0]-1)<=8 && (variaveis->hidroaviao[1]-1)<=8 && (variaveis->hidroaviao[0]+1)>0 && (variaveis->hidroaviao[0]-1)>0 && (variaveis->hidroaviao[1]-1)>0){
+                        if(campoX[variaveis->hidroaviao[0]][variaveis->hidroaviao[1]]!="0" && campoX[variaveis->hidroaviao[0]+1][variaveis->hidroaviao[1]]!="0" && campoX[variaveis->hidroaviao[0]-1][variaveis->hidroaviao[1]]!="0" && campoX[variaveis->hidroaviao[0]][variaveis->hidroaviao[1]-1]!="0"){
+                            s=1;
+                        }
+                    }
+            break;
+        }
+    if(s==1){
+        campoX[variaveis->hidroaviao[0]][variaveis->hidroaviao[1]]="H";
+        switch(variaveis->hidroaviao[2]){
+                case 1:
+                        campoX[variaveis->hidroaviao[0]][variaveis->hidroaviao[1]+1]="H";
+                        campoX[variaveis->hidroaviao[0]][variaveis->hidroaviao[1]-1]="H";
+                        campoX[variaveis->hidroaviao[0]+1][variaveis->hidroaviao[1]]="H";
+                        if(campoX[variaveis->hidroaviao[0]+2][variaveis->hidroaviao[1]]=="~~"){
+                            campoX[variaveis->hidroaviao[0]+2][variaveis->hidroaviao[1]]="0";    
+                        }
+                break;
+                case 2:
+                        campoX[variaveis->hidroaviao[0]][variaveis->hidroaviao[1]+1]="H";
+                        campoX[variaveis->hidroaviao[0]][variaveis->hidroaviao[1]-1]="H";
+                        campoX[variaveis->hidroaviao[0]-1][variaveis->hidroaviao[1]]="H";
+                        if(campoX[variaveis->hidroaviao[0]-2][variaveis->hidroaviao[1]]=="~~"){
+                            campoX[variaveis->hidroaviao[0]-2][variaveis->hidroaviao[1]]="0";
+                        }
+                        if(campoX[variaveis->hidroaviao[0]+1][variaveis->hidroaviao[1]]=="~~"){
+                            campoX[variaveis->hidroaviao[0]+1][variaveis->hidroaviao[1]+1]="0";
+                            campoX[variaveis->hidroaviao[0]+1][variaveis->hidroaviao[1]-1]="0";
+                            campoX[variaveis->hidroaviao[0]+1][variaveis->hidroaviao[1]]="0";
+                        }
+                break;
+                case 3:
+                        campoX[variaveis->hidroaviao[0]+1][variaveis->hidroaviao[1]]="H";
+                        campoX[variaveis->hidroaviao[0]-1][variaveis->hidroaviao[1]]="H";
+                        campoX[variaveis->hidroaviao[0]][variaveis->hidroaviao[1]+1]="H";
+                        if(campoX[variaveis->hidroaviao[0]][variaveis->hidroaviao[1]+2]=="~~"){
+                            campoX[variaveis->hidroaviao[0]][variaveis->hidroaviao[1]+2]="0";
+                        }
+                        campoX[variaveis->hidroaviao[0]+2][variaveis->hidroaviao[1]]="0";
+                break;
+                case 4:
+                        campoX[variaveis->hidroaviao[0]+1][variaveis->hidroaviao[1]]="H";
+                        campoX[variaveis->hidroaviao[0]-1][variaveis->hidroaviao[1]]="H";
+                        campoX[variaveis->hidroaviao[0]][variaveis->hidroaviao[1]-1]="H";
+                        if(campoX[variaveis->hidroaviao[0]][variaveis->hidroaviao[1]-2]=="~~"){
+                            campoX[variaveis->hidroaviao[0]][variaveis->hidroaviao[1]-2]=="0";
+                        }
+                        campoX[variaveis->hidroaviao[0]+2][variaveis->hidroaviao[1]]="0";
+        }
+            for(int i=1;i<9;i++){
+                for(int j=1;j<9;j++){
+                    if(campoX[i][j]=="H"){
+                        if(campoX[i-1][j]=="~~"){
+                            campoX[i-1][j]="0";
+                        }
+                        if(campoX[i][j-1]=="~~"){
+                            campoX[i][j-1]="0";
+                        }
+                        if(campoX[i][j+1]=="~~"){
+                            campoX[i][j+1]="0";
+                            }
+                        if(campoX[i+1][j]=="0"){
+                            campoX[i+1][j]="0";
+                        }
+                    }
+                }
+            }
+            return 1;
+        }
+    else{
+        return -1;
+    }    
+}   
+void bombardeiro(Variaveis *variaveis, char missil0,char missil1,string campoA[N][N]){
+    if (missil0 >= 65 && missil0 <= 72){
+                missil0-=64;
+                missil1-=48;
+            }
+            if(campoA[missil0][missil1]=="X" && campoA[missil0][missil1]=="H!" && campoA[missil0][missil1]=="S!"){
+            }
+            else if(campoA[missil0][missil1]=="~~" || campoA[missil0][missil1]=="H" || campoA[missil0][missil1]=="S"){
+                if(campoA[missil0][missil1]=="S"){
+                        variaveis->campoC[missil0][missil1]="S!";
+                        variaveis->contB--;
+                }
+                else{
+                    if(campoA[missil0][missil1]=="H"){
+                            variaveis->campoC[missil0][missil1]="H!";
+                            variaveis->contB--;
+                        }
+                    else{
+                        variaveis->campoC[missil0][missil1]="X";
+                    }
+                }
+        }
+}
+void bombardeiroM(Variaveis *variaveis, int missil0,int missil1,string campoA[N][N]){
+
+            if(campoA[missil0][missil1]=="X" && campoA[missil0][missil1]=="H!" && campoA[missil0][missil1]=="S!"){
+                cout << "anal" << endl;
+            }
+            else if(campoA[missil0][missil1]=="~~" || campoA[missil0][missil1]=="H" || campoA[missil0][missil1]=="S"){
+                cout << "sexo" << endl;
+                    if(campoA[missil0][missil1]=="S"){
+                        cout << "boquete" << endl;
+                    campoA[missil0][missil1]="S!";
+                    variaveis->contA--;
+                }
+                else{
+                    if(campoA[missil0][missil1]=="H"){
+                        cout << "beijo grego" << endl;
+                            campoA[missil0][missil1]="H!";
+                            variaveis->contA--;
+                    }
+                    else{
+                        cout << "69" << endl;
+                            campoA[missil0][missil1]="X";
+                    }
+                }
+        }
+}
+int main(){
+    char missil0;
+    char missil1;
+    int missilm0;
+    int missilm1;
+    int i,l;
+    string campoA[N][N],campoB[N][N];
+    Variaveis variaveis;
+
+    inicializa(&variaveis,campoA,campoB);
+    for(i=0;i<2;i++){
+        l=0;
+        do{
+            if(l>0){
+                cout << "coordenada invalida" << endl;
+            }
+            preenchesub(&variaveis);
+            l++;
+        }while(verificasub(&variaveis,campoA)==-1  );
+        imprime(campoA);
+    }
+    for(i=0;i<2;i++){
+        do{
+            variaveis.submarino[0]=rand()% 8 + 1;
+            variaveis.submarino[1]=rand()% 8 + 1;
+        }while(verificasub(&variaveis,campoB)==-1);
+    }
+    for(i=0;i<2;i++){
+        l=0;
+        do{
+            if(l>0){
+                cout << "coordenada invalida" << endl;
+            }
+            preenchehidro(&variaveis);
+            l++;
+        }while(verificahidro(&variaveis,campoA)==-1 );
+        imprime(campoA);
+    }
+    for(i=0;i<2;i++){
+        do{
+            variaveis.hidroaviao[0]=rand()% 8 + 1;
+            variaveis.hidroaviao[1]=rand()% 8 + 1;
+            variaveis.hidroaviao[2]=rand()% 8 + 1;
+        }while(verificahidro(&variaveis,campoB)==-1);
+    }
+    limpacampo(campoA);
+    limpacampo(campoB);
+    while(variaveis.contA!=0 && variaveis.contB!=0){
+            cout << "Digite a cordenada para o ataque" << endl;
+            cin >> missil0 >> missil1;
+        bombardeiro(&variaveis,missil0,missil1,campoB);
+            missilm0=rand()% 8 + 1;
+            missilm1=rand()% 8 + 1;
+        bombardeiroM(&variaveis,missilm0,missilm1,campoA);
+        imprimeAeB(&variaveis,campoA);
+    }
+}
