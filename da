@@ -1,0 +1,33 @@
+#include<iostream>
+#include<iomanip>
+
+using namespace std;
+
+int preencha(int *v,int n){
+    int ptr=0;
+    
+    for (int i=0; i<n; i++){
+        *v = i ;
+        v++;
+    }
+    return 0;
+}
+void mostra(int *v,int n){
+    for (int i=0; i<n; i++){
+        cout << *v << " ";
+        v++;
+    }
+}
+int main(){
+    int n;
+    cin >> n;
+    int *v;
+    if (!(v = new(nothrow) int[n])){
+        cout << "FAil" << endl;
+        return -1;
+    }
+    preencha(v,n);
+    mostra(v,n);
+    delete[] v;
+    v = NULL;
+} 
