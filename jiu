@@ -1,0 +1,120 @@
+#include<iostream>
+#include<iomanip>
+#include<fstream>
+
+using namespace std;
+
+typedef struct{
+    int codigo;
+    string cor;
+} Tinta;
+adicionar(Tinta *tintas){
+    ofstream arq ("catalogo.csv",ios::app);
+    if(!arq){
+        cout << "Erro em adicionar codigo" << endl;
+        return -1;
+    }
+    do{
+        cout << "Digite o Codigo(para encerrar digite 0): ";
+        cin >> tintas->codigo;
+        if(tintas->codigo != 00){
+            cout << "Cor" << endl;
+            cin.get();
+            getline(cin, tintas->cor);
+            arq << tintas->codigo << endl;
+            arq << tintas->cor << endl;
+        }
+    }while(tintas->codigo != 0);
+    arq.close();
+    return 0;
+}
+mostra(Tinta *tintas){
+    ifstream arq ("catalogo.csv");
+    if(!arq){
+        cout << "Erro em abir o arquivo" << endl;
+        return -1;
+    }
+    cout << "Codigo da Tinta" << endl;
+    while(arq.good()){
+        getline(arq,tintas->cor);
+        arq >> tintas->codigo;
+        cout << setw(6) << tintas->codigo << " ";
+        cout << tintas->cor << endl;
+    }
+    arq.close();
+    return 0;
+}
+Tinta* busca_arq(int cod, ifstream& arq){
+    Tinta *tintas;
+    tintas = new (nothrow) Tinta;
+    arq.seekg(0);
+    do{
+        getline(arq, tintas->cor);
+        arq >> tintas->codigo;
+    }while(tintas->codigo != cod && !arq.eof());
+        if(tintas->codigo == cod){
+            return tintas;
+        }
+        else{
+            return NULL;
+        }
+}
+int pesquisar(){
+    Tinta *tintas;
+    int codigobusca;
+
+    ifstream arq("catalogo.csv");
+    if(!arq){
+        cout << "Não foi possivel abrir o arquivo" << endl;
+        return -1; 
+    }
+    do{
+        cout << "Digite o codigo da cor que procura(Para finalizar digite 0)" << endl;
+        cin >> codigobusca;
+        if(codigobusca != 0){
+            tintas = busca_arq(codigobusca, arq);
+        }
+        if(tintas){
+            cout << "Cor: " << tintas->cor << endl;
+        }
+        else{
+            cout << "Cor não cadastrada" << endl;
+        }
+    }while(codigobusca != 0);
+    arq.close();
+    delete tintas;
+    tintas = NULL;
+    return 0;
+}
+int main(){
+    Tinta tinta;
+    char op;
+    do{
+        cout << "(A)dicionar (L)ista (P)esquisa  (F)im" << endl;
+        cin >> op;
+        op = toupper(op);
+        cin.get();
+        switch(op){
+            case 'A':
+            if(adicionar(&tinta)==-1){
+                cout << "Houve um erro em adicionar a lista" << endl;
+            }
+            else{
+                cout << endl;
+            }
+            break;
+            case 'L':
+            if(mostra(&tinta)==-1){
+                cout << "Houve um erro na leitura da lista" << endl;
+            }
+            else{
+                cout << endl;
+            }
+            break;
+            case 'P':
+                pesquisar();
+            break;
+        }
+    }while(op !='F');
+    return 0;
+}
