@@ -1,0 +1,39 @@
+
+public class Turma {
+	private String curso, disiplina;
+	
+	public String getCurso() {
+		return curso;
+	}
+	
+	public String getDisplina() {
+		return disiplina;
+	}
+	
+	public void setCurso(String curso1) {
+		curso = curso1;
+	}
+	
+	public void setDisiplina(String disiplina1) {
+		disiplina = disiplina1;
+	}
+	
+	public void imprime() {
+		System.out.println("Curso: " + curso + " Diciplina: " + disiplina);
+	}
+}
+
+
+public class UsaTurma {
+	public static void main(String[] args) {
+		Turma turma1 = new Turma();
+		
+		turma1.setCurso("Pedreiro");
+		turma1.setDisiplina("Calculo Avancado");
+		
+		System.out.println("Curso: " + turma1.getCurso());
+		System.out.println("Displina: " + turma1.getDisplina());
+		
+		turma1.imprime();
+	}
+}
