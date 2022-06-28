@@ -1,0 +1,39 @@
+
+public class Livro {
+	private String titulo, autor;
+	
+	public String getTitulo(){
+		return titulo; 
+	}
+	
+	public String getAutor(){
+		return autor;
+	}
+	
+	public void setTitulo(String titulo1){
+		titulo = titulo1;
+	}
+	
+	public void setAutor(String autor1) {
+		autor = autor1;
+	}
+	
+	public void exibeDados() {
+		System.out.println("Titulo: " + titulo + "Autor: " + autor);
+	}
+}
+
+
+public class UsaLivro {
+	public static void main(String[] args) {
+		Livro livro1 = new Livro();
+		
+		livro1.setTitulo("Meditacoes");
+		livro1.setAutor("Marco Aurélio");
+		
+		System.out.println("Titulo: " + livro1.getTitulo());
+		System.out.println(" Autor: " + livro1.getAutor());
+		
+		livro1.exibeDados();
+	}
+}
